@@ -1,5 +1,6 @@
 package com.test.noteservice.service;
 
+import com.test.noteservice.exception.NoteNotFoundException;
 import com.test.noteservice.exception.UserNotFoundException;
 import com.test.noteservice.exception.UsernameExistsException;
 import com.test.noteservice.model.User;
@@ -57,7 +58,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String id) {
-        User user = getUserById(id);
-        userRepository.delete(user);
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User not found with id " + id);
+        }
+        userRepository.deleteById(id);
     }
 }
