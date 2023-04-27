@@ -42,9 +42,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Note createNote(String content, String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " has not been found"));
-
+        User user = userRepository.findById(userId).orElse(null);
         Note note = Note.builder()
                 .content(content)
                 .user(user)

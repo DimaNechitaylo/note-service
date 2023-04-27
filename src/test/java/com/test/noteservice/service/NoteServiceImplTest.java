@@ -91,15 +91,6 @@ public class NoteServiceImplTest {
     }
 
     @Test
-    void createNote_shouldThrowUserNotFoundException_whenInvalidUserIdIsPassed() {
-        String content = "Test note";
-        String userId = "1";
-        when(userRepository.findById(anyString())).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> noteService.createNote(content, userId));
-    }
-
-    @Test
     public void updateNote_ShouldReturnUpdatedNote_WhenNoteExists() {
         String noteId = "1";
         String content = "New Content";

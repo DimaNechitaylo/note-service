@@ -35,7 +35,7 @@ public class NoteController {
     }
 
     @PostMapping
-    public ResponseEntity<Note> createNote(@RequestParam String content, String userId) {
+    public ResponseEntity<Note> createNote(@RequestParam String content, @RequestParam(value = "userId", required = false) String userId) {
         Note createdNote = noteService.createNote(content, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdNote);
     }
@@ -62,7 +62,7 @@ public class NoteController {
     @PostMapping("/{id}/like")
     public ResponseEntity<Void> likeNoteById(@PathVariable("id") String id) {
         try {
-            noteService.addLikeToNoteById(id, "644a531b12bc691bd66bf321"); //TODO
+            noteService.addLikeToNoteById(id, "644a4e42a9e6ca370c83a289"); //TODO
             return ResponseEntity.ok().build();
         }catch (LikeException e){
             return ResponseEntity.notFound().build();
@@ -72,7 +72,7 @@ public class NoteController {
     @PostMapping("/{id}/unlike")
     public ResponseEntity<Void> unlikeNoteById(@PathVariable("id") String id) {
         try {
-            noteService.removeLikeFromNoteById(id, "644a531b12bc691bd66bf321"); //TODO
+            noteService.removeLikeFromNoteById(id, "644a4e42a9e6ca370c83a289"); //TODO
             return ResponseEntity.ok().build();
         } catch (UnlikeException e) {
             return ResponseEntity.notFound().build();
