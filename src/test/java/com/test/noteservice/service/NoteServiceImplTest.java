@@ -1,8 +1,11 @@
 package com.test.noteservice.service;
 
 
+import com.test.noteservice.exception.LikeException;
 import com.test.noteservice.exception.NoteNotFoundException;
+import com.test.noteservice.exception.UnlikeException;
 import com.test.noteservice.exception.UserNotFoundException;
+import com.test.noteservice.model.Like;
 import com.test.noteservice.model.Note;
 import com.test.noteservice.model.User;
 import com.test.noteservice.repository.LikeRepository;
@@ -22,8 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class NoteServiceImplTest {
 
@@ -138,6 +140,48 @@ public class NoteServiceImplTest {
         when(noteRepository.existsById(noteId)).thenReturn(false);
 
         assertThrows(NoteNotFoundException.class, () -> noteService.deleteNoteById(noteId));
+    }
+
+    @Test
+    public void testAddLikeToNoteById() throws LikeException {
+        String noteId = "123";
+        String userId = "456";
+        Like like = new Like(userId, noteId);
+        when(likeRepository.existsByUserIdAndNoteId(userId, noteId)).thenReturn(false);
+
+        noteService.addLikeToNoteById(noteId, userId);
+
+        verify(likeRepository, times(1)).save(like);
+    }
+
+    @Test
+    public void testAddLikeToNoteById_LikeException() throws LikeException {
+        // Arrange
+        String noteId = "123";
+        String userId = "456";
+        when(likeRepository.existsByUserIdAndNoteId(userId, noteId)).thenReturn(true);
+
+        assertThrows(LikeException.class, () -> noteService.addLikeToNoteById(noteId, userId));
+    }
+
+    @Test
+    public void testRemoveLikeFromNoteById() throws UnlikeException {
+        String noteId = "123";
+        String userId = "456";
+        when(likeRepository.existsByUserIdAndNoteId(userId, noteId)).thenReturn(true);
+
+        noteService.removeLikeFromNoteById(noteId, userId);
+
+        verify(likeRepository, times(1)).deleteByUserIdAndNoteId(userId, noteId);
+    }
+
+    @Test
+    public void testRemoveLikeFromNoteById_UnlikeException() throws UnlikeException {
+        String noteId = "123";
+        String userId = "456";
+        when(likeRepository.existsByUserIdAndNoteId(userId, noteId)).thenReturn(false);
+
+        assertThrows(UnlikeException.class, () -> noteService.removeLikeFromNoteById(noteId, userId));
     }
 
     private List<Note> getListOfNotesWithIds12ContentsTest1Test2() {

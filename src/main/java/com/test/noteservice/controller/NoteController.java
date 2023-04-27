@@ -1,6 +1,8 @@
 package com.test.noteservice.controller;
 
+import com.test.noteservice.exception.LikeException;
 import com.test.noteservice.exception.NoteNotFoundException;
+import com.test.noteservice.exception.UnlikeException;
 import com.test.noteservice.model.Note;
 import com.test.noteservice.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +26,12 @@ public class NoteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Note> getNoteById(@PathVariable("id") String id) {
-        Note note = noteService.getNoteById(id);
-        if (note == null) {
+        try {
+            Note note = noteService.getNoteById(id);
+            return ResponseEntity.ok(note);
+        } catch (NoteNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(note);
     }
 
     @PostMapping
@@ -56,20 +59,24 @@ public class NoteController {
         }
     }
 
-//    @PostMapping("/{id}/like")
-//    public ResponseEntity<Void> likeNoteById(@PathVariable("id") String id) {
-//        if (noteService.addLikeToNoteById(id)) {
-//            return ResponseEntity.ok().build();
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Void> likeNoteById(@PathVariable("id") String id) {
+        try {
+            noteService.addLikeToNoteById(id, "644a531b12bc691bd66bf321"); //TODO
+            return ResponseEntity.ok().build();
+        }catch (LikeException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-//    @PostMapping("/{id}/unlike")
-//    public ResponseEntity<Void> unlikeNoteById(@PathVariable("id") String id) {
-//        if (noteService.unlikeNoteById(id)) {
-//            return ResponseEntity.ok().build();
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
+    @PostMapping("/{id}/unlike")
+    public ResponseEntity<Void> unlikeNoteById(@PathVariable("id") String id) {
+        try {
+            noteService.removeLikeFromNoteById(id, "644a531b12bc691bd66bf321"); //TODO
+            return ResponseEntity.ok().build();
+        } catch (UnlikeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }

@@ -1,6 +1,8 @@
 package com.test.noteservice.service;
 
+import com.test.noteservice.exception.LikeException;
 import com.test.noteservice.exception.NoteNotFoundException;
+import com.test.noteservice.exception.UnlikeException;
 import com.test.noteservice.exception.UserNotFoundException;
 import com.test.noteservice.model.Like;
 import com.test.noteservice.model.Note;
@@ -67,19 +69,18 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void addLikeToNoteById(String noteId, String userId) {
-        if (!noteRepository.existsById(noteId) && !noteRepository.existsById(noteId)
-                && likeRepository.existsByUserIdAndNoteId(userId, noteId)) {
-            throw new UserNotFoundException("User with id " + userId + " has not been found"); //TODO
+    public void addLikeToNoteById(String noteId, String userId) throws LikeException {
+        if (likeRepository.existsByUserIdAndNoteId(userId, noteId)) {
+            throw new LikeException(); //TODO
         }
         Like like = new Like(userId, noteId);
         likeRepository.save(like);
     }
 
     @Override
-    public void removeLikeFromNoteById(String noteId, String userId) {
-        if (!noteRepository.existsById(noteId) && !noteRepository.existsById(noteId)) {
-            throw new UserNotFoundException("User with id " + userId + " has not been found"); //TODO
+    public void removeLikeFromNoteById(String noteId, String userId) throws UnlikeException {
+        if (!likeRepository.existsByUserIdAndNoteId(userId, noteId)) {
+            throw new UnlikeException(); //TODO
         }
         likeRepository.deleteByUserIdAndNoteId(userId, noteId);
     }
