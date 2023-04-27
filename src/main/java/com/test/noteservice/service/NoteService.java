@@ -4,11 +4,11 @@ import com.test.noteservice.model.Note;
 import java.util.List;
 
 public interface NoteService {
-    Note getNoteById(Long id);
+    Note getNoteById(String id);
     List<Note> getAllNotes();
     Note createNote(String content, String userId);
-    Note updateNote(Long noteId, String content);
-    void deleteNoteById(Long noteId);
-    void addLikeToNoteById(Long noteId, Long userId);
-    void removeLikeFromNoteById(Long noteId, Long userId);
+    Note updateNote(String noteId, String content);
+    void deleteNoteById(String noteId);
+    void addLikeToNoteById(String noteId, String userId);
+    void removeLikeFromNoteById(String noteId, String userId);
 }

@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface LikeRepository extends MongoRepository<Like, Long> {
+public interface LikeRepository extends MongoRepository<Like, String> {
     Optional<List<Like>> findByUserId(String userId);
     Optional<List<Like>> findByNoteId(String noteId);
     Optional<Like> findByUserIdAndNoteId(String userId, String noteId);
-    void deleteByUserIdAndNoteId(Long userId, Long noteId);
-    boolean existsByUserIdAndNoteId(Long userId, Long noteId);
+    void deleteByUserIdAndNoteId(String userId, String noteId);
+    boolean existsByUserIdAndNoteId(String userId, String noteId);
 }

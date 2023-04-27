@@ -27,7 +27,7 @@ public class NoteServiceImpl implements NoteService {
     private LikeRepository likeRepository;
 
     @Override
-    public Note getNoteById(Long id) {
+    public Note getNoteById(String id) {
         Optional<Note> note = noteRepository.findById(id);
         return note.orElseThrow(() -> new NoteNotFoundException("Note not found with id: " + id));
     }
@@ -51,7 +51,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note updateNote(Long noteId, String content) {
+    public Note updateNote(String noteId, String content) {
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new NoteNotFoundException("User not found with id " + noteId));
         note.setContent(content);
@@ -59,7 +59,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void deleteNoteById(Long noteId) {
+    public void deleteNoteById(String noteId) {
         if (!noteRepository.existsById(noteId)) {
             throw new NoteNotFoundException("Note not found with id " + noteId);
         }
@@ -67,7 +67,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void addLikeToNoteById(Long noteId, Long userId) {
+    public void addLikeToNoteById(String noteId, String userId) {
         if (!noteRepository.existsById(noteId) && !noteRepository.existsById(noteId)
                 && likeRepository.existsByUserIdAndNoteId(userId, noteId)) {
             throw new UserNotFoundException("User with id " + userId + " has not been found"); //TODO
@@ -77,7 +77,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void removeLikeFromNoteById(Long noteId, Long userId) {
+    public void removeLikeFromNoteById(String noteId, String userId) {
         if (!noteRepository.existsById(noteId) && !noteRepository.existsById(noteId)) {
             throw new UserNotFoundException("User with id " + userId + " has not been found"); //TODO
         }
