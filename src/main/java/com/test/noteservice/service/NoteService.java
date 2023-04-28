@@ -20,7 +20,7 @@ public interface NoteService {
 
     void deleteNoteById(String noteId);
 
-    void addLikeToNoteById(String noteId, String userId) throws LikeException;
+    void addLikeToNoteById(String noteId, String username) throws LikeException;
 
-    void removeLikeFromNoteById(String noteId, String userId) throws UnlikeException;
+    void removeLikeFromNoteById(String noteId, String username) throws UnlikeException;
 }

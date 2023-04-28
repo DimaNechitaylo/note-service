@@ -56,8 +56,10 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note createNote(String content, String userId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public Note createNote(String content, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElse(null);
+
         Note note = Note.builder()
                 .content(content)
                 .user(user)
@@ -92,7 +94,11 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void addLikeToNoteById(String noteId, String userId) throws LikeException {
+    public void addLikeToNoteById(String noteId, String username) throws LikeException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+
+        String userId = user.getId();
         if (likeRepository.existsByUserIdAndNoteId(userId, noteId)) {
             throw new LikeException("Like from " + userId + " user to " + noteId + " note already exist");
         }
@@ -101,7 +107,11 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void removeLikeFromNoteById(String noteId, String userId) throws UnlikeException {
+    public void removeLikeFromNoteById(String noteId, String username) throws UnlikeException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+
+        String userId = user.getId();
         if (!likeRepository.existsByUserIdAndNoteId(userId, noteId)) {
             throw new UnlikeException("User " + userId + " does not have like on " + noteId + " note");
         }
