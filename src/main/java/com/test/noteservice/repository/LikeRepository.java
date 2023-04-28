@@ -14,4 +14,5 @@ public interface LikeRepository extends MongoRepository<Like, String> {
     Optional<Like> findByUserIdAndNoteId(String userId, String noteId);
     void deleteByUserIdAndNoteId(String userId, String noteId);
     boolean existsByUserIdAndNoteId(String userId, String noteId);
+    Long countByNoteId(String noteId);
 }

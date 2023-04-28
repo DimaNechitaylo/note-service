@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <h4><a th:href="@{/main}">Main</a></h4>
+    <title>Notes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
+</head>
+<body>
+<h1>Notes</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Note</th>
+        <th>Likes count</th>
+        <th>Author</th>
+        <th>Creation date</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr th:each="note : ${notes}">
+            <td th:text="${note.content}"></td>
+            <td th:text="${note.likesCount}"></td>
+            <td th:text="${note.username}"></td>
+            <td th:text="${note.createdAt}"></td>
+            <td>
+                <div th:if="${#authorization.expression('isAuthenticated()')}">
+                <form th:action="@{/api/note/{id}/like(id=${note.id})}" method="post">
+                    <button type="submit">Like</button>
+                </form>
+                </div>
+            </td>
+            <td>
+                <div th:if="${#authorization.expression('isAuthenticated()')}">
+                    <form th:action="@{/api/note/{id}/unlike(id=${note.id})}" method="post">
+                        <button type="submit">Unlike</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div th:if="${param.failure}">
+    <script th:inline="javascript">
+        function showLikeErrorMessage() {
+            Swal.fire({
+                icon: 'error',
+                title: 'U can`t do it',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+        showLikeErrorMessage();
+    </script>
+</div>
+</body>
+</html>

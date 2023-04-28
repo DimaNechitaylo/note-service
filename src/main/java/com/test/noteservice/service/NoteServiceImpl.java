@@ -1,5 +1,6 @@
 package com.test.noteservice.service;
 
+import com.test.noteservice.dto.NoteDto;
 import com.test.noteservice.exception.LikeException;
 import com.test.noteservice.exception.NoteNotFoundException;
 import com.test.noteservice.exception.UnlikeException;
@@ -13,8 +14,10 @@ import com.test.noteservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NoteServiceImpl implements NoteService {
@@ -35,9 +38,21 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<Note> getAllNotes() {
+    public List<NoteDto> getAllNotes() {
         return noteRepository.findAllByOrderByCreatedAtDesc()
-                .orElseThrow(() -> new NoteNotFoundException("Notes have not been found"));
+                .orElseThrow(() -> new NoteNotFoundException("Notes have not been found"))
+                .stream()
+                .map(note -> {
+                    return NoteDto.builder()
+                            .id(note.getId())
+                            .content(note.getContent())
+                            .username(note.getUser() != null ? note.getUser().getUsername() : null)
+                            .likesCount(getLikesCount(note.getId()))
+                            .createdAt(note.getCreatedAt())
+                            .build();
+
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -46,6 +61,7 @@ public class NoteServiceImpl implements NoteService {
         Note note = Note.builder()
                 .content(content)
                 .user(user)
+                .createdAt(LocalDateTime.now())
                 .build();
         return noteRepository.save(note);
     }
@@ -69,7 +85,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public void addLikeToNoteById(String noteId, String userId) throws LikeException {
         if (likeRepository.existsByUserIdAndNoteId(userId, noteId)) {
-            throw new LikeException(); //TODO
+            throw new LikeException("Like from " + userId + " user to " + noteId + " note already exist");
         }
         Like like = new Like(userId, noteId);
         likeRepository.save(like);
@@ -78,8 +94,12 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public void removeLikeFromNoteById(String noteId, String userId) throws UnlikeException {
         if (!likeRepository.existsByUserIdAndNoteId(userId, noteId)) {
-            throw new UnlikeException(); //TODO
+            throw new UnlikeException("User " + userId + " does not have like on " + noteId + " note");
         }
         likeRepository.deleteByUserIdAndNoteId(userId, noteId);
+    }
+
+    private Long getLikesCount(String noteId) {
+        return likeRepository.countByNoteId(noteId);
     }
 }

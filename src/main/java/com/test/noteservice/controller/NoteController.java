@@ -1,5 +1,6 @@
 package com.test.noteservice.controller;
 
+import com.test.noteservice.dto.NoteDto;
 import com.test.noteservice.exception.LikeException;
 import com.test.noteservice.exception.NoteNotFoundException;
 import com.test.noteservice.exception.UnlikeException;
@@ -8,11 +9,14 @@ import com.test.noteservice.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/note")
 public class NoteController {
 
@@ -20,8 +24,9 @@ public class NoteController {
     private NoteService noteService;
 
     @GetMapping
-    public List<Note> getAllNotes() {
-        return noteService.getAllNotes();
+    public String getAllNotes(Model model) {
+        model.addAttribute("notes", noteService.getAllNotes());
+        return "notes";
     }
 
     @GetMapping("/{id}")
@@ -60,22 +65,22 @@ public class NoteController {
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<Void> likeNoteById(@PathVariable("id") String id) {
+    public String likeNoteById(@PathVariable("id") String id, Authentication authentication) {
         try {
-            noteService.addLikeToNoteById(id, "644a4e42a9e6ca370c83a289"); //TODO
-            return ResponseEntity.ok().build();
-        }catch (LikeException e){
-            return ResponseEntity.notFound().build();
+            noteService.addLikeToNoteById(id, authentication.getName());
+            return "redirect:/api/note";
+        } catch (LikeException e) {
+            return "redirect:/api/note?failure";
         }
     }
 
     @PostMapping("/{id}/unlike")
-    public ResponseEntity<Void> unlikeNoteById(@PathVariable("id") String id) {
+    public String unlikeNoteById(@PathVariable("id") String id, Authentication authentication) {
         try {
-            noteService.removeLikeFromNoteById(id, "644a4e42a9e6ca370c83a289"); //TODO
-            return ResponseEntity.ok().build();
+            noteService.removeLikeFromNoteById(id, authentication.getName()); //TODO
+            return "redirect:/api/note";
         } catch (UnlikeException e) {
-            return ResponseEntity.notFound().build();
+            return "redirect:/api/note?failure";
         }
     }
 
