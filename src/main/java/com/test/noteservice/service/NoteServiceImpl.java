@@ -67,6 +67,15 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    public Note createNote(String content) {
+        Note note = Note.builder()
+                .content(content)
+                .createdAt(LocalDateTime.now())
+                .build();
+        return noteRepository.save(note);
+    }
+
+    @Override
     public Note updateNote(String noteId, String content) {
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new NoteNotFoundException("User not found with id " + noteId));

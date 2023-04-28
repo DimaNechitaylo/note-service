@@ -40,9 +40,14 @@ public class NoteController {
     }
 
     @PostMapping
-    public ResponseEntity<Note> createNote(@RequestParam String content, @RequestParam(value = "userId", required = false) String userId) {
-        Note createdNote = noteService.createNote(content, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdNote);
+    public String createNote(@RequestParam String content, Authentication authentication) {
+        Note createdNote;
+        if(authentication != null){
+            createdNote = noteService.createNote(content, authentication.getName());
+        }else {
+            createdNote = noteService.createNote(content);
+        }
+        return "redirect:/api/note?success";
     }
 
     @PutMapping("/{id}")

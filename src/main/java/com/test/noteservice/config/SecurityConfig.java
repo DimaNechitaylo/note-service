@@ -2,6 +2,7 @@ package com.test.noteservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +18,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/note/{id}/like", "/api/note/{id}/unlike").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/note/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/note/{id}").hasRole("ADMIN")
+                        .requestMatchers("/api/user/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .formLogin((form) -> form

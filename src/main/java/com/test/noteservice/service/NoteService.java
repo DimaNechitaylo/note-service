@@ -10,6 +10,7 @@ public interface NoteService {
     Note getNoteById(String id);
     List<NoteDto> getAllNotes();
     Note createNote(String content, String userId);
+    public Note createNote(String content);
     Note updateNote(String noteId, String content);
     void deleteNoteById(String noteId);
     void addLikeToNoteById(String noteId, String userId) throws LikeException;
