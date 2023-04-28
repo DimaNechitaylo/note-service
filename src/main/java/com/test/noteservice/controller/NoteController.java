@@ -42,9 +42,9 @@ public class NoteController {
     @PostMapping
     public String createNote(@RequestParam String content, Authentication authentication) {
         Note createdNote;
-        if(authentication != null){
+        if (authentication != null) {
             createdNote = noteService.createNote(content, authentication.getName());
-        }else {
+        } else {
             createdNote = noteService.createNote(content);
         }
         return "redirect:/api/note?success";
@@ -64,7 +64,7 @@ public class NoteController {
         try {
             noteService.deleteNoteById(id);
             return ResponseEntity.ok().build();
-        }catch (NoteNotFoundException e){
+        } catch (NoteNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

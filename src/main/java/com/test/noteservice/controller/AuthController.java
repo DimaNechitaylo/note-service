@@ -30,18 +30,19 @@ public class AuthController {
 
     @PostMapping("/register")
     public String registerUserAccount(@ModelAttribute("user") User user,
-                                      BindingResult result)  {
-        try{
+                                      BindingResult result) {
+        try {
             userService.createUser(user);
             return "redirect:/login?success";
-        }catch (UsernameExistsException e){
+        } catch (UsernameExistsException e) {
             return "register";
         }
     }
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null){
+        if (authentication != null) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
         return "redirect:/main?logout";

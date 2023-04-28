@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface NoteRepository extends MongoRepository<Note, String> {
     Optional<List<Note>> findAllByOrderByCreatedAtDesc();
+
     Optional<List<Note>> findAllByUserOrderByCreatedAtDesc(User user);
+
     Optional<Note> findByIdAndUser(String id, User user);
 }

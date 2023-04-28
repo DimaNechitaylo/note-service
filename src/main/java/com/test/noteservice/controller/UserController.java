@@ -26,9 +26,9 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") String id) {
         User user;
-        try{
+        try {
             user = userService.getUserById(id);
-        }catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build();
 
         }
@@ -57,10 +57,10 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable("id") String id) {
-        try{
+        try {
             userService.deleteUser(id);
 
-        }catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();
